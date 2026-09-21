@@ -24,3 +24,15 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+@theme {
+  /* Palet Warna Maqlupastina (Figma) */
+  --color-primary: #007a3d;
+  --color-accent: #f59e0b;
+  --color-background: #fafaf9;
+  --color-text-main: #1c1917;
+  --color-warning: #ce1126;
+
+  /* Daftarkan Font Baru */
+  --font-abhaya: "Abhaya Libre", serif;
+}
