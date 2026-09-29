@@ -38,9 +38,9 @@ export async function proxy(request: NextRequest) {
       return NextResponse.redirect(new URL("/", request.url));
     }
 
-    // Cek role di tabel profiles
+    // PERBAIKAN: Ambil role dari tabel 'users' (BUKAN 'profiles')
     const { data: profile } = await supabase
-      .from("profiles")
+      .from("users")
       .select("role")
       .eq("id", user.id)
       .single();

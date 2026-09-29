@@ -11,12 +11,12 @@ export default async function Home() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // 2. Ambil data profil khusus (nama panggilan & WA) jika user sedang login
+  // 2. Ambil seluruh data profil (termasuk role, nick_name, phone) jika user sedang login
   let profile = null;
   if (user) {
     const { data } = await supabase
       .from("users")
-      .select("nick_name, phone")
+      .select("*") // PERBAIKAN: Ambil seluruh kolom termasuk 'role'
       .eq("id", user.id)
       .single();
     profile = data;
@@ -34,7 +34,6 @@ export default async function Home() {
       >
         {/* FLOATING CARD CONTAINER */}
         <div className="absolute top-28 left-6 md:left-12 lg:left-40 z-10">
-          {/* Tambahkan w-full, tetapkan min-w, dan max-w agar lebarnya terkunci kokoh */}
           <div className="bg-white p-6 lg:p-8 rounded-3xl shadow-2xl w-[calc(100vw-3rem)] md:w-[420px] min-h-[300px]">
             <OrderTeaser user={user} />
           </div>

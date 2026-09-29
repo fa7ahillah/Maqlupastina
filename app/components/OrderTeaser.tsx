@@ -3,12 +3,14 @@
 import { useState } from "react";
 import { createClient } from "@/lib/client";
 import ProfileModal from "./ProfileModal";
-import AuthModal from "./AuthModal"; // 1. Impor AuthModal
+import AuthModal from "./AuthModal";
+import { useRouter } from "next/navigation";
 
 export default function OrderTeaser({ user }: { user: any }) {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false); // 2. State untuk modal login
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const supabase = createClient();
+  const router = useRouter();
 
   const batchDate = "Rabu, 16 Sep 2026";
   const totalPortions = 30;
@@ -17,13 +19,11 @@ export default function OrderTeaser({ user }: { user: any }) {
   const progressPercentage = (remainingPortions / totalPortions) * 100;
 
   const handleProceedToOrder = async () => {
-    // 3. Jika belum login, langsung buka AuthModal alih-alih alert
     if (!user) {
       setIsAuthModalOpen(true);
       return;
     }
 
-    // Cek kelengkapan data profil di tabel users
     const { data, error } = await supabase
       .from("users")
       .select("nick_name, phone")
@@ -33,14 +33,13 @@ export default function OrderTeaser({ user }: { user: any }) {
     if (error || !data?.nick_name || !data?.phone) {
       setIsProfileModalOpen(true);
     } else {
-      alert(
-        `Siap memproses pesanan untuk ${data.nick_name}! Menuju form checkout...`,
-      );
+      // Langsung arahkan ke halaman checkout secara mulus
+      router.push("/checkout");
     }
   };
 
   return (
-    <div className="flex flex-col h-full w-full justify-between">
+    <div className="flex flex-col h-full w-full justify-between font-sans">
       <div>
         <h3 className="text-3xl font-sans font-extrabold text-text-main mb-3 leading-tight">
           Sudah.. Pesan saja.
@@ -89,12 +88,13 @@ export default function OrderTeaser({ user }: { user: any }) {
           userEmail={user.email}
           onSuccess={() => {
             setIsProfileModalOpen(false);
-            alert("Data berhasil disimpan! Menuju ke pemesanan...");
+            router.push("/checkout"); // Langsung ke checkout setelah profil dilengkapi
           }}
+          onClose={() => setIsProfileModalOpen(false)}
         />
       )}
 
-      {/* 4. Modal Auth untuk pengguna yang belum login */}
+      {/* Modal Auth untuk pengguna yang belum login */}
       <AuthModal
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
